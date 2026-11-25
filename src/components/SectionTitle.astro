@@ -1,0 +1,44 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+}
+
+const { eyebrow, title } = Astro.props;
+---
+
+<header class="section-title reveal">
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2>{title}</h2>
+  <svg class="ornament" viewBox="0 0 200 12" aria-hidden="true">
+    <line x1="0" y1="6" x2="86" y2="6" />
+    <path d="M100 0.5 105.5 6 100 11.5 94.5 6Z" />
+    <line x1="114" y1="6" x2="200" y2="6" />
+  </svg>
+</header>
+
+<style>
+  .section-title {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .eyebrow {
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .ornament {
+    width: 12rem;
+    margin-top: 1.5rem;
+    stroke: var(--gold);
+    stroke-width: 0.8;
+    fill: none;
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import SectionTitle from './SectionTitle.astro';
+import { venue } from '../data/wedding';
+
+// Basta con soltar la foto del sitio en src/assets/venue/ (se usa la primera por orden alfabético).
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/venue/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+});
+const photo = Object.keys(files).sort().map((k) => files[k].default)[0];
+
+const q = encodeURIComponent(venue.mapsQuery);
+const appleMaps = `https://maps.apple.com/?q=${q}`;
+const googleMaps = `https://www.google.com/maps/search/?api=1&query=${q}`;
+---
+
+<section class="section section--black location">
+  <div class="container">
+    <SectionTitle eyebrow="Dónde" title="Ubicación" />
+    <div class="layout">
+      <figure class="photo reveal">
+        {
+          photo ? (
+            <Image
+              src={photo}
+              alt={`${venue.name}, ${venue.city}`}
+              widths={[640, 960, 1400]}
+              sizes="(min-width: 900px) 40rem, 92vw"
+            />
+          ) : (
+            <div class="placeholder" aria-hidden="true">
+              <Icon name="ph:image-light" />
+            </div>
+          )
+        }
+      </figure>
+      <div class="info reveal">
+        <h3 class="gold-text">{venue.name}</h3>
+        <p class="eyebrow city">{venue.city}</p>
+        <p class="desc">{venue.description}</p>
+        <a class="btn" href={googleMaps} target="_blank" rel="noopener" data-maps data-apple={appleMaps}>
+          <Icon name="ph:map-pin-light" aria-hidden="true" />
+          Cómo llegar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .location :global(h2) {
+    color: var(--ivory);
+  }
+
+  .layout {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .layout {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .photo {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border: 1px solid rgba(217, 192, 142, 0.3);
+  }
+
+  .photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    background: linear-gradient(160deg, var(--green-800), var(--green-950));
+    color: var(--gold);
+    font-size: 4rem;
+    opacity: 0.8;
+  }
+
+  .info {
+    text-align: center;
+  }
+
+  @media (min-width: 900px) {
+    .info {
+      text-align: left;
+    }
+  }
+
+  h3 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 500;
+  }
+
+  .city {
+    margin-top: 0.75rem;
+    color: var(--gold-light);
+  }
+
+  .desc {
+    margin: 1.5rem 0 2rem;
+    opacity: 0.85;
+  }
+</style>
+
+<script>
+  // En iPhone, iPad y Mac abre Apple Maps; en el resto, Google Maps (que en Android abre la app).
+  const link = document.querySelector<HTMLAnchorElement>('[data-maps]');
+  const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  if (link && isApple) link.href = link.dataset.apple!;
+</script>

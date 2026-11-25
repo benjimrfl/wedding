@@ -1,0 +1,111 @@
+---
+import SectionTitle from './SectionTitle.astro';
+import { event, venue } from '../data/wedding';
+
+const units = [
+  { key: 'days', label: 'Días' },
+  { key: 'hours', label: 'Horas' },
+  { key: 'minutes', label: 'Minutos' },
+  { key: 'seconds', label: 'Segundos' },
+];
+---
+
+<section class="section section--dark countdown" data-countdown data-target={event.dateISO}>
+  <div class="container">
+    <SectionTitle eyebrow="Cuenta atrás" title="Falta poco" />
+    <div class="grid reveal" role="timer" aria-live="off">
+      {
+        units.map((u) => (
+          <div class="unit">
+            <span class="value gold-text" data-unit={u.key}>--</span>
+            <span class="eyebrow label">{u.label}</span>
+          </div>
+        ))
+      }
+    </div>
+    <p class="done script gold-text" hidden data-done>¡Hoy es el gran día!</p>
+    <p class="when reveal">{event.dateLong} · {event.time}<br />{venue.name} · {venue.city}</p>
+  </div>
+</section>
+
+<style>
+  .countdown {
+    text-align: center;
+  }
+
+  .countdown :global(h2) {
+    color: var(--ivory);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(0.5rem, 3vw, 2rem);
+    max-width: 52rem;
+    margin-inline: auto;
+  }
+
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding-block: clamp(1rem, 3vw, 2rem);
+    border: 1px solid rgba(217, 192, 142, 0.35);
+    border-radius: 1rem;
+  }
+
+  .value {
+    font-size: clamp(2.5rem, 9vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .label {
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+    letter-spacing: 0.2em;
+    opacity: 0.85;
+  }
+
+  .done {
+    font-size: clamp(3rem, 10vw, 5rem);
+  }
+
+  .when {
+    margin-top: 2.5rem;
+    font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+    font-style: italic;
+    opacity: 0.9;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-countdown]');
+  if (root) {
+    const target = new Date(root.dataset.target!).getTime();
+    const el = (k: string) => root.querySelector<HTMLElement>(`[data-unit="${k}"]`)!;
+    const out = { days: el('days'), hours: el('hours'), minutes: el('minutes'), seconds: el('seconds') };
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const tick = () => {
+      // Usa la hora del sistema del dispositivo.
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        root.querySelector('.grid')!.setAttribute('hidden', '');
+        root.querySelector('[data-done]')!.removeAttribute('hidden');
+        return false;
+      }
+      const s = Math.floor(diff / 1000);
+      out.days.textContent = String(Math.floor(s / 86400));
+      out.hours.textContent = pad(Math.floor((s % 86400) / 3600));
+      out.minutes.textContent = pad(Math.floor((s % 3600) / 60));
+      out.seconds.textContent = pad(s % 60);
+      return true;
+    };
+
+    if (tick()) {
+      const id = setInterval(() => tick() || clearInterval(id), 1000);
+    }
+  }
+</script>

@@ -1,0 +1,122 @@
+---
+import { Icon } from 'astro-icon/components';
+import SectionTitle from './SectionTitle.astro';
+import { gifts } from '../data/wedding';
+---
+
+<section class="section gifts">
+  <div class="container">
+    <SectionTitle eyebrow="Si queréis tener un detalle" title="Regalo" />
+    <div class="body reveal">
+      <p class="lead">
+        Vuestra presencia es nuestro mejor regalo y <strong>no es necesario nada más</strong>. Aun así, si queréis
+        tener un detalle con nosotros, aquí os dejamos algunas ideas.
+      </p>
+
+      <div class="options">
+        <div class="option">
+          <Icon name="ph:bank-light" class="icon" aria-hidden="true" />
+          <p class="eyebrow">Número de cuenta</p>
+          <p class="iban" data-iban>{gifts.iban}</p>
+          <p class="holder">Titular: {gifts.holder}</p>
+          <button class="btn" type="button" data-copy>
+            <Icon name="ph:copy-light" aria-hidden="true" />
+            <span data-copy-label>Copiar</span>
+          </button>
+        </div>
+
+        <div class="option">
+          <Icon name="ph:gift-light" class="icon" aria-hidden="true" />
+          <p class="eyebrow">Lista de deseos</p>
+          <p class="holder">Algunas ideas que nos harían ilusión</p>
+          <a class="btn" href={gifts.amazonUrl} target="_blank" rel="noopener">
+            <Icon name="ph:amazon-logo-light" aria-hidden="true" />
+            Ver lista en Amazon
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .body {
+    max-width: 52rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .lead {
+    font-size: clamp(1.2rem, 2.3vw, 1.5rem);
+    font-style: italic;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--green-900);
+  }
+
+  .options {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 760px) {
+    .options {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: clamp(2rem, 4vw, 2.75rem) 1.5rem;
+    border: 1px solid rgba(184, 151, 90, 0.45);
+    border-radius: var(--radius);
+  }
+
+  .option .btn {
+    margin-top: auto;
+  }
+
+  .icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--green-800);
+  }
+
+  .option .eyebrow {
+    color: var(--gold);
+  }
+
+  .iban {
+    font-family: var(--font-sans);
+    font-size: clamp(0.85rem, 2.6vw, 1rem);
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
+  }
+
+  .holder {
+    margin-bottom: 1rem;
+    opacity: 0.75;
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const iban = document.querySelector<HTMLElement>('[data-iban]');
+  const label = document.querySelector<HTMLElement>('[data-copy-label]');
+  btn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(iban!.textContent!.replace(/\s+/g, ''));
+      label!.textContent = '¡Copiado!';
+    } catch {
+      label!.textContent = 'No se pudo copiar';
+    }
+    setTimeout(() => (label!.textContent = 'Copiar'), 2000);
+  });
+</script>

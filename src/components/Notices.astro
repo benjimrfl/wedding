@@ -1,0 +1,76 @@
+---
+import { Icon } from 'astro-icon/components';
+import SectionTitle from './SectionTitle.astro';
+
+const notices = [
+  {
+    icon: 'ph:bowl-food-light',
+    title: 'Alergias e intolerancias',
+    text: 'Si tienes alguna alergia, intolerancia o dieta especial, escríbenos lo antes posible para que el catering pueda tenerlo en cuenta.',
+  },
+  {
+    icon: 'ph:video-camera-light',
+    title: 'Un mensaje para el recuerdo',
+    text: 'Durante la boda tendremos una cámara para que, si os apetece, nos grabéis un breve mensaje en vídeo. ¡Id pensando qué queréis decirnos! Será uno de nuestros recuerdos más bonitos.',
+  },
+  {
+    icon: 'ph:camera-light',
+    title: 'Vive el momento',
+    text: 'Hemos contratado a un gran equipo de fotografía para que no se pierda ningún detalle. Podéis usar el móvil, pero lo que más ilusión nos hace es que lo guardéis y disfrutéis del día con nosotros.',
+  },
+];
+---
+
+<section class="section notices">
+  <div class="container">
+    <SectionTitle eyebrow="Importante" title="Avisos" />
+    <ul class="grid">
+      {
+        notices.map((n, i) => (
+          <li class="card reveal" style={`transition-delay:${i * 100}ms`}>
+            <Icon name={n.icon} class="icon" aria-hidden="true" />
+            <h3>{n.title}</h3>
+            <p>{n.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .card {
+    padding: clamp(2rem, 4vw, 2.75rem);
+    text-align: center;
+    border: 1px solid rgba(184, 151, 90, 0.45);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.45);
+  }
+
+  .icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    color: var(--green-800);
+  }
+
+  h3 {
+    margin: 1.25rem 0 0.75rem;
+    font-size: clamp(1.6rem, 3vw, 1.9rem);
+    font-weight: 500;
+    color: var(--green-900);
+  }
+</style>

@@ -1,0 +1,327 @@
+---
+import { Image } from 'astro:assets';
+import { carouselSlides, couple } from '../data/wedding';
+
+// Basta con soltar fotos en src/assets/carousel/; se ordenan por nombre de archivo.
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/carousel/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+const images = Object.keys(files)
+  .sort()
+  .map((key) => files[key].default);
+
+const count = Math.max(images.length, carouselSlides.length);
+const slides = Array.from({ length: count }, (_, i) => ({
+  image: images[i],
+  ...carouselSlides[i],
+}));
+---
+
+<section class="carousel" aria-roledescription="carrusel" aria-label="Fotos y detalles de la boda">
+  <div class="track" data-track>
+    {
+      slides.map((slide, i) => (
+        <article
+          class="slide"
+          data-slide
+          aria-roledescription="diapositiva"
+          aria-label={`${i + 1} de ${slides.length}`}
+        >
+          {slide.image ? (
+            <Image
+              src={slide.image}
+              alt={slide.title ?? ''}
+              widths={[640, 960, 1400, 2000]}
+              sizes="(min-width: 900px) 68rem, 88vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              class="slide__img"
+            />
+          ) : (
+            <div class="slide__placeholder" aria-hidden="true">
+              <span class="script gold-text">
+                {couple.initials[0]}&amp;{couple.initials[1]}
+              </span>
+            </div>
+          )}
+          {slide.title && (
+            <div class="slide__caption">
+              {slide.eyebrow && <p class="eyebrow">{slide.eyebrow}</p>}
+              <h3>{slide.title}</h3>
+              {slide.text && <p class="slide__text">{slide.text}</p>}
+            </div>
+          )}
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="controls">
+    <div class="dots" role="tablist" aria-label="Elegir diapositiva">
+      {
+        slides.map((_, i) => (
+          <button class="dot" type="button" role="tab" aria-label={`Ir a la diapositiva ${i + 1}`} data-dot>
+            <span class="dot__fill" />
+          </button>
+        ))
+      }
+    </div>
+    <button class="play" type="button" aria-label="Pausar" data-play>
+      <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.2" height="14" rx="1" /><rect x="13.8" y="5" width="3.2" height="14" rx="1" /></svg>
+      <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .carousel {
+    --card-w: min(88vw, 68rem);
+    --duration: 6s;
+    padding-block: clamp(1rem, 3vw, 2rem) clamp(3rem, 6vw, 4rem);
+  }
+
+  .track {
+    position: relative;
+    display: flex;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-inline: calc((100% - var(--card-w)) / 2);
+    overscroll-behavior-x: contain;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    position: relative;
+    flex: 0 0 var(--card-w);
+    aspect-ratio: 4 / 5;
+    max-height: 82svh;
+    border-radius: var(--radius);
+    overflow: hidden;
+    scroll-snap-align: center;
+    background: var(--green-900);
+    isolation: isolate;
+    transition: opacity 0.6s ease;
+  }
+
+  @media (min-width: 900px) {
+    .slide {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  .slide__img,
+  .slide__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .slide__placeholder {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(217, 192, 142, 0.18), transparent 55%),
+      radial-gradient(circle at 80% 90%, rgba(217, 192, 142, 0.1), transparent 50%),
+      var(--paper),
+      linear-gradient(160deg, var(--green-800), var(--green-950));
+  }
+
+  .slide__placeholder span {
+    font-size: clamp(8rem, 30vw, 20rem);
+    line-height: 1;
+    opacity: 0.35;
+    /* Evita que el background-clip recorte los trazos de la caligrafía */
+    padding: 0.1em 0.3em;
+  }
+
+  .slide__caption {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    padding-top: 6rem;
+    color: var(--white);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  }
+
+  .slide__caption .eyebrow {
+    color: var(--gold-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .slide__caption h3 {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 500;
+  }
+
+  .slide__text {
+    margin-top: 0.5rem;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    opacity: 0.9;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .dots {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: 999px;
+    background: rgba(28, 28, 26, 0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(28, 28, 26, 0.35);
+    overflow: hidden;
+    cursor: pointer;
+    transition: width 0.5s ease, background-color 0.5s ease;
+  }
+
+  /* Área táctil cómoda en móvil sin cambiar el tamaño visual */
+  .dot::before {
+    content: '';
+    position: absolute;
+    inset: -0.75rem -0.3rem;
+  }
+
+  .dot[aria-selected='true'] {
+    width: 3rem;
+    background: rgba(28, 28, 26, 0.2);
+  }
+
+  .dot__fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--green-900);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .dot[aria-selected='true'] .dot__fill {
+    animation: progress var(--duration) linear forwards;
+  }
+
+  .carousel.is-paused .dot[aria-selected='true'] .dot__fill {
+    animation-play-state: paused;
+  }
+
+  @keyframes progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .play {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(28, 28, 26, 0.08);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  .play svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: currentColor;
+  }
+
+  .icon-play,
+  .carousel.is-paused .icon-pause {
+    display: none;
+  }
+
+  .carousel.is-paused .icon-play {
+    display: block;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.carousel').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const play = root.querySelector<HTMLButtonElement>('[data-play]')!;
+    let current = -1;
+    let userPaused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let offscreen = false;
+
+    const syncPaused = () => {
+      const paused = userPaused || offscreen || document.hidden;
+      root.classList.toggle('is-paused', paused);
+      play.setAttribute('aria-label', userPaused ? 'Reproducir' : 'Pausar');
+    };
+
+    const setActive = (i: number) => {
+      if (i === current) return;
+      current = i;
+      dots.forEach((dot, j) => dot.setAttribute('aria-selected', String(j === i)));
+    };
+
+    const goTo = (i: number) => {
+      const slide = slides[(i + slides.length) % slides.length];
+      track.scrollTo({
+        left: slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2,
+        behavior: 'smooth',
+      });
+    };
+
+    // La diapositiva más visible marca el punto activo (tanto con autoplay como deslizando a mano).
+    const slideObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(slides.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { root: track, threshold: 0.6 },
+    );
+    slides.forEach((s) => slideObserver.observe(s));
+
+    new IntersectionObserver(([entry]) => {
+      offscreen = !entry.isIntersecting;
+      syncPaused();
+    }).observe(root);
+
+    document.addEventListener('visibilitychange', syncPaused);
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => goTo(i));
+      dot.querySelector('.dot__fill')!.addEventListener('animationend', () => goTo(i + 1));
+    });
+
+    play.addEventListener('click', () => {
+      userPaused = !userPaused;
+      syncPaused();
+    });
+
+    setActive(0);
+    syncPaused();
+  });
+</script>

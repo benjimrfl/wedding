@@ -1,0 +1,199 @@
+---
+import { Icon } from 'astro-icon/components';
+import SectionTitle from './SectionTitle.astro';
+import { itinerary } from '../data/wedding';
+---
+
+<section class="section itinerary">
+  <div class="container">
+    <SectionTitle eyebrow="El gran día" title="Itinerario" />
+    <ol class="timeline" style={`--count:${itinerary.length}`}>
+      {
+        itinerary.map((item, i) => (
+          <li class:list={['item', i % 2 ? 'item--top' : 'item--bottom']} style={`--i:${i}`}>
+            <div class="card reveal">
+              <Icon name={item.icon} class="icon" aria-hidden="true" />
+              <time class="time">{item.time} h</time>
+              <p class="title">
+                {item.title}
+                {item.detail && <span>{item.detail}</span>}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="note">* Horario aproximado</p>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    --stem: 2rem;
+    --line: 1px solid var(--ink);
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    background: var(--ink);
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    background: var(--ink);
+  }
+
+  .icon {
+    width: clamp(3rem, 6vw, 4.25rem);
+    height: auto;
+    aspect-ratio: 1;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .time {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    color: var(--green-800);
+  }
+
+  .title {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  .title span {
+    display: block;
+    opacity: 0.7;
+  }
+
+  .note {
+    margin-top: 3rem;
+    text-align: center;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .card.reveal {
+    transition-delay: calc(var(--i) * 80ms);
+  }
+
+  /* Móvil: línea vertical central, tarjetas alternas a izquierda y derecha */
+  @media (max-width: 899px) {
+    .timeline {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .timeline::before {
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+
+    .card {
+      padding-inline: var(--stem);
+    }
+
+    .card::after {
+      top: 50%;
+      width: calc(var(--stem) - 0.5rem);
+      height: 1px;
+    }
+
+    .item--bottom .card {
+      grid-column: 2;
+    }
+
+    .item--bottom .card::after {
+      left: 0;
+    }
+
+    .item--top .card {
+      grid-column: 1;
+    }
+
+    .item--top .card::after {
+      right: 0;
+    }
+  }
+
+  /* Escritorio: línea horizontal, tarjetas alternas arriba y abajo (como la invitación) */
+  @media (min-width: 900px) {
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(var(--count, 7), 1fr);
+      grid-template-rows: 1fr 1fr;
+      column-gap: 0.5rem;
+    }
+
+    .timeline::before {
+      left: -2rem;
+      right: -2rem;
+      top: 50%;
+      height: 1px;
+    }
+
+    .item {
+      display: contents;
+    }
+
+    .card {
+      grid-column: calc(var(--i) + 1);
+    }
+
+    .card::after {
+      left: 50%;
+      width: 1px;
+      height: var(--stem);
+    }
+
+    .item--top .card {
+      grid-row: 1;
+      align-self: end;
+      flex-direction: column-reverse;
+      padding-bottom: var(--stem);
+    }
+
+    .item--top .card::after {
+      bottom: 0;
+    }
+
+    .item--bottom .card {
+      grid-row: 2;
+      align-self: start;
+      padding-top: var(--stem);
+    }
+
+    .item--bottom .card::after {
+      top: 0;
+    }
+  }
+</style>

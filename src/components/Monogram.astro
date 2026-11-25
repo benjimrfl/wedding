@@ -1,0 +1,73 @@
+---
+import { couple, event } from '../data/wedding';
+---
+
+<section class="monogram section">
+  <div class="container reveal">
+    <div class="crest">
+      <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="96" />
+        <circle cx="100" cy="100" r="90" />
+      </svg>
+      <h1 class="script gold-text">
+        <span>{couple.initials[0]}</span><span class="amp">&amp;</span><span>{couple.initials[1]}</span>
+      </h1>
+    </div>
+    <p class="eyebrow date">{event.dateShort}</p>
+    <p class="lead">
+      Con la ilusión de empezar juntos una nueva etapa, nos encantaría que nos acompañaras en el día más
+      especial de nuestras vidas.
+    </p>
+  </div>
+</section>
+
+<style>
+  .monogram {
+    text-align: center;
+  }
+
+  .crest {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(15rem, 55vw, 22rem);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+
+  .ring {
+    position: absolute;
+    inset: 0;
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 0.6;
+  }
+
+  h1 {
+    font-size: clamp(4.5rem, 18vw, 7.5rem);
+    line-height: 1;
+    /* Margen para que el background-clip no recorte los trazos */
+    padding: 0.2em 0.35em 0.05em;
+    white-space: nowrap;
+  }
+
+  .amp {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.45em;
+    margin-inline: 0.15em;
+    vertical-align: 0.35em;
+  }
+
+  .date {
+    margin-top: 2rem;
+    color: var(--gold);
+  }
+
+  .lead {
+    max-width: 34rem;
+    margin: 1.5rem auto 0;
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    font-style: italic;
+  }
+</style>
