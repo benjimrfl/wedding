@@ -3,7 +3,7 @@
   --green-900: #0f2a1f;
   --green-800: #173a2b;
   --black: #0d0d0c;
-  --ink: #1c1c1a;
+  --ink: #f1ece2;
   --ivory: #f8f5ee;
   --white: #ffffff;
   --gold: #b8975a;
@@ -51,7 +51,7 @@ body {
   font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3rem);
   line-height: 1.6;
   color: var(--ink);
-  background: var(--ivory) var(--paper);
+  background: var(--black) var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

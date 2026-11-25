@@ -15,8 +15,8 @@ export const event = {
 export const venue = {
   name: 'Vega de Montalvo',
   city: 'Camas, Sevilla',
-  // Texto de búsqueda para Apple Maps / Google Maps. Se puede sustituir por coordenadas "lat,lng".
-  mapsQuery: 'Vega de Montalvo, Camas, Sevilla',
+  // Coordenadas de la entrada (en Google Maps: mantén pulsado el punto y copia los números).
+  coords: { lat: 37.4009598917332, lng: -6.0202223 },
   description:
     'Ceremonia, cóctel, cena y fiesta: todo será en el mismo lugar, así que solo tendréis que llegar una vez y disfrutar.',
 };

@@ -5,14 +5,15 @@ import SectionTitle from './SectionTitle.astro';
 import { venue } from '../data/wedding';
 
 // Basta con soltar la foto del sitio en src/assets/venue/ (se usa la primera por orden alfabético).
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/venue/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-});
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/venue/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}',
+  { eager: true },
+);
 const photo = Object.keys(files).sort().map((k) => files[k].default)[0];
 
-const q = encodeURIComponent(venue.mapsQuery);
-const appleMaps = `https://maps.apple.com/?q=${q}`;
-const googleMaps = `https://www.google.com/maps/search/?api=1&query=${q}`;
+const { lat, lng } = venue.coords;
+const appleMaps = `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(venue.name)}`;
+const googleMaps = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 ---
 
 <section class="section section--black location">

@@ -4,7 +4,7 @@ import { carouselSlides, couple } from '../data/wedding';
 
 // Basta con soltar fotos en src/assets/carousel/; se ordenan por nombre de archivo.
 const files = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/carousel/*.{jpg,jpeg,png,webp,avif}',
+  '../assets/carousel/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}',
   { eager: true },
 );
 const images = Object.keys(files)
@@ -181,7 +181,7 @@ const slides = Array.from({ length: count }, (_, i) => ({
     gap: 0.6rem;
     padding: 1.1rem 1.4rem;
     border-radius: 999px;
-    background: rgba(28, 28, 26, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
   }
 
@@ -192,7 +192,7 @@ const slides = Array.from({ length: count }, (_, i) => ({
     padding: 0;
     border: 0;
     border-radius: 999px;
-    background: rgba(28, 28, 26, 0.35);
+    background: rgba(255, 255, 255, 0.4);
     overflow: hidden;
     cursor: pointer;
     transition: width 0.5s ease, background-color 0.5s ease;
@@ -207,14 +207,14 @@ const slides = Array.from({ length: count }, (_, i) => ({
 
   .dot[aria-selected='true'] {
     width: 3rem;
-    background: rgba(28, 28, 26, 0.2);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   .dot__fill {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--green-900);
+    background: var(--gold-light);
     transform: scaleX(0);
     transform-origin: left;
   }
@@ -241,7 +241,7 @@ const slides = Array.from({ length: count }, (_, i) => ({
     padding: 0;
     border: 0;
     border-radius: 50%;
-    background: rgba(28, 28, 26, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
     cursor: pointer;
     color: var(--ink);
